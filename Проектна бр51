@@ -1,0 +1,69 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <random>
+
+int random(int lower, int upper) {
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(lower, upper);
+    return distr(gen);
+}
+
+struct karta {
+    std::string oznaka;
+    std::string boja;
+};
+
+class Karta {
+private:
+    karta k;
+public:
+    
+    void setKarta(int rng_broj, int rng_boja) {
+        if (rng_broj <= 10) this->k.oznaka = std::to_string(rng_broj);
+        else if (rng_broj == 11) this->k.oznaka = "Dzandar";
+        else if (rng_broj == 12) this->k.oznaka = "Cupa";
+        else if (rng_broj == 13) this->k.oznaka = "Pop";
+        else if (rng_broj == 14) this->k.oznaka = "Dzoker";
+
+        if (rng_broj == 14) {
+            if (rng_boja == 1 || rng_boja == 2) this->k.boja = "Crven";
+            else this->k.boja = "Crn";
+            return;
+        }
+
+        if (rng_boja == 1) this->k.boja = "Karo";
+        else if (rng_boja == 2) this->k.boja = "Srce";
+        else if (rng_boja == 3) this->k.boja = "Detelina";
+        else if (rng_boja == 4) this->k.boja = "List";
+    }
+
+    karta getKarta() { return k; }
+
+};
+
+int main() {
+    std::vector<Karta> karti;
+    for (int i = 0; i < 5; ++i) {
+        Karta k;
+        int n_oznaka = random(1, 14);
+        int n_boja = random(1, 4);
+        k.setKarta(n_oznaka, n_boja);
+        for(auto itr : karti) {
+            while (itr.getKarta().oznaka == k.getKarta().oznaka && itr.getKarta().boja == k.getKarta().boja) {
+                n_oznaka = random(1, 14);
+                n_boja = random(1, 4);
+                k.setKarta(n_oznaka, n_boja);
+            }
+
+        }
+        karti.push_back(k);
+    }
+
+    for(auto itr : karti) {
+        std::cout << itr.getKarta().oznaka << " " << itr.getKarta().boja << std::endl;
+    }
+
+    return 0;
+}
